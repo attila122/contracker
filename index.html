@@ -19,7 +19,7 @@
         }
 
         .container {
-            max-width: 800px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 40px 20px;
         }
@@ -32,6 +32,21 @@
             font-size: 2rem;
             font-weight: 600;
             margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: black;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
         }
 
         .subtitle {
@@ -43,6 +58,11 @@
             margin-bottom: 40px;
             padding-bottom: 20px;
             border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
         }
 
         .search-input {
@@ -52,6 +72,11 @@
             border: 1px solid #ddd;
             border-radius: 4px;
             font-size: 16px;
+        }
+
+        .stats-summary {
+            color: #666;
+            font-size: 0.9rem;
         }
 
         .event-image {
@@ -133,13 +158,29 @@
             h1 {
                 font-size: 1.75rem;
             }
+
+            .events-list {
+                grid-template-columns: 1fr;
+            }
+
+            .search-section {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-input {
+                max-width: none;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>ConTracker</h1>
+            <h1>
+                <span class="logo-icon">🎌</span>
+                ConTracker
+            </h1>
             <p class="subtitle">Upcoming anime and cosplay conventions</p>
         </header>
 
@@ -150,6 +191,9 @@
                 class="search-input" 
                 placeholder="Search by country..."
             >
+            <div class="stats-summary" id="eventCount">
+                Showing all events
+            </div>
         </div>
 
         <ul class="events-list" id="eventsList">
@@ -176,7 +220,6 @@
                 website: "https://example.com/animexpo",
                 image: "images/con1.jpg"
             },
-
             {
                 id: 2,
                 name: "Nordic Cosplay Championship",
@@ -282,14 +325,18 @@
         function renderEvents(events) {
             const eventsList = document.getElementById('eventsList');
             const noEvents = document.getElementById('noEvents');
+            const eventCount = document.getElementById('eventCount');
 
             if (events.length === 0) {
                 eventsList.innerHTML = '';
                 noEvents.style.display = 'block';
+                eventCount.textContent = 'No events found';
                 return;
             }
 
             noEvents.style.display = 'none';
+            eventCount.textContent = `Showing ${events.length} event${events.length === 1 ? '' : 's'}`;
+            
             eventsList.innerHTML = events.map(event => `
                 <li class="event-item">
                     <img src="${event.image}" alt="${event.name}" class="event-image" />
