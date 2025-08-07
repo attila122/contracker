@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ConTracker - Anime & Cosplay Events</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: white;
+            color: black;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        header {
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        .search-section {
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .search-input {
+            width: 100%;
+            max-width: 300px;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .event-image {
+            width: 100%;
+            max-width: 200px;
+            height: 120px;
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            margin-bottom: 12px;
+            object-fit: cover;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #333;
+        }
+
+        .events-list {
+            list-style: none;
+        }
+
+        .event-item {
+            padding: 24px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .event-item:last-child {
+            border-bottom: none;
+        }
+
+        .event-date {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .event-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .event-location {
+            color: #666;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .event-description {
+            color: #333;
+            font-size: 0.95rem;
+            margin-bottom: 12px;
+        }
+
+        .event-link {
+            color: black;
+            text-decoration: underline;
+            font-size: 0.9rem;
+        }
+
+        .event-link:hover {
+            text-decoration: none;
+        }
+
+        .no-events {
+            text-align: center;
+            color: #666;
+            font-size: 1rem;
+            margin-top: 60px;
+            padding: 40px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px 15px;
+            }
+            
+            h1 {
+                font-size: 1.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>ConTracker</h1>
+            <p class="subtitle">Upcoming anime and cosplay conventions</p>
+        </header>
+
+        <div class="search-section">
+            <input 
+                type="text" 
+                id="countrySearch" 
+                class="search-input" 
+                placeholder="Search by country..."
+            >
+        </div>
+
+        <ul class="events-list" id="eventsList">
+            <!-- Events will be populated here -->
+        </ul>
+
+        <div class="no-events" id="noEvents" style="display: none;">
+            <p>No events found for your search</p>
+        </div>
+    </div>
+
+    <script>
+        // Sample events data
+        const eventsData = [
+            {
+                id: 1,
+                name: "AnimeXpo 2025",
+                date: "2025-08-15",
+                endDate: "2025-08-17",
+                city: "Stockholm",
+                country: "Sweden",
+                venue: "Stockholm International Fairs",
+                description: "The largest anime convention in Scandinavia featuring guests, panels, cosplay contests, and vendor halls.",
+                website: "https://example.com/animexpo",
+                image: "images/con1.jpg"
+            },
+
+            {
+                id: 2,
+                name: "Nordic Cosplay Championship",
+                date: "2025-09-12",
+                endDate: "2025-09-12",
+                city: "Stockholm",
+                country: "Sweden",
+                venue: "Kulturhuset",
+                description: "Annual cosplay competition featuring the best cosplayers from Nordic countries.",
+                website: "https://example.com/nordiccosplay",
+                image: "images/con2.jpg"
+            },
+            {
+                id: 3,
+                name: "Manga Festival Stockholm",
+                date: "2025-10-05",
+                endDate: "2025-10-06",
+                city: "Stockholm",
+                country: "Sweden",
+                venue: "Stockholm City Conference Centre",
+                description: "Celebrate Japanese manga culture with artist exhibitions, workshops, and exclusive releases.",
+                website: "https://example.com/mangafest",
+                image: "images/con3.jpg"
+            },
+            {
+                id: 4,
+                name: "GameCon Stockholm",
+                date: "2025-11-20",
+                endDate: "2025-11-22",
+                city: "Stockholm",
+                country: "Sweden",
+                venue: "Stockholmsmässan",
+                description: "Gaming convention featuring latest releases, tournaments, and developer meetups.",
+                website: "https://example.com/gamecon",
+                image: "https://via.placeholder.com/200x120/f5f5f5/666?text=GameCon"
+            },
+            {
+                id: 5,
+                name: "Winter Anime Festival",
+                date: "2025-12-15",
+                endDate: "2025-12-16",
+                city: "Gothenburg",
+                country: "Sweden",
+                venue: "Svenska Mässan",
+                description: "Winter-themed anime convention with holiday cosplay contests and seasonal activities.",
+                website: "https://example.com/winteranime",
+                image: "https://via.placeholder.com/200x120/f5f5f5/666?text=Winter+Anime"
+            },
+            {
+                id: 6,
+                name: "Comic & Anime Expo Malmö",
+                date: "2025-09-28",
+                endDate: "2025-09-29",
+                city: "Malmö",
+                country: "Sweden",
+                venue: "Malmö Arena",
+                description: "Southern Sweden's premier pop culture event combining comics, anime, and gaming.",
+                website: "https://example.com/malmoexpo",
+                image: "https://via.placeholder.com/200x120/f5f5f5/666?text=Malmo+Expo"
+            },
+            {
+                id: 7,
+                name: "Anime North",
+                date: "2025-08-22",
+                endDate: "2025-08-24",
+                city: "Toronto",
+                country: "Canada",
+                venue: "Toronto Congress Centre",
+                description: "Canada's largest anime convention featuring Japanese pop culture, cosplay, and entertainment.",
+                website: "https://example.com/animenorth",
+                image: "https://via.placeholder.com/200x120/f5f5f5/666?text=Anime+North"
+            },
+            {
+                id: 8,
+                name: "Japan Expo",
+                date: "2025-09-05",
+                endDate: "2025-09-08",
+                city: "Paris",
+                country: "France",
+                venue: "Paris Nord Villepinte",
+                description: "Europe's largest Japanese pop culture convention with manga, anime, and traditional culture.",
+                website: "https://example.com/japanexpo",
+                image: "https://via.placeholder.com/200x120/f5f5f5/666?text=Japan+Expo"
+            }
+        ];
+
+        function formatDate(dateStr, endDateStr) {
+            const startDate = new Date(dateStr);
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            
+            if (endDateStr && endDateStr !== dateStr) {
+                const endDate = new Date(endDateStr);
+                if (startDate.getMonth() === endDate.getMonth()) {
+                    return `${startDate.getDate()}-${endDate.getDate()} ${startDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}`;
+                } else {
+                    return `${startDate.toLocaleDateString('en-US', options)} - ${endDate.toLocaleDateString('en-US', options)}`;
+                }
+            }
+            
+            return startDate.toLocaleDateString('en-US', options);
+        }
+
+        function renderEvents(events) {
+            const eventsList = document.getElementById('eventsList');
+            const noEvents = document.getElementById('noEvents');
+
+            if (events.length === 0) {
+                eventsList.innerHTML = '';
+                noEvents.style.display = 'block';
+                return;
+            }
+
+            noEvents.style.display = 'none';
+            eventsList.innerHTML = events.map(event => `
+                <li class="event-item">
+                    <img src="${event.image}" alt="${event.name}" class="event-image" />
+                    <div class="event-date">${formatDate(event.date, event.endDate)}</div>
+                    <div class="event-title">${event.name}</div>
+                    <div class="event-location">${event.venue}, ${event.city}, ${event.country}</div>
+                    <div class="event-description">${event.description}</div>
+                    <a href="${event.website}" target="_blank" class="event-link">More information</a>
+                </li>
+            `).join('');
+        }
+
+        function filterEventsByCountry() {
+            const searchTerm = document.getElementById('countrySearch').value.toLowerCase().trim();
+            
+            let filteredEvents = eventsData;
+            
+            if (searchTerm) {
+                filteredEvents = eventsData.filter(event => 
+                    event.country.toLowerCase().includes(searchTerm)
+                );
+            }
+
+            // Sort by date (upcoming first)
+            filteredEvents.sort((a, b) => new Date(a.date) - new Date(b.date));
+            
+            renderEvents(filteredEvents);
+        }
+
+        // Event listener for country search
+        document.getElementById('countrySearch').addEventListener('input', filterEventsByCountry);
+
+        // Initialize with all events, sorted by date
+        const sortedEvents = [...eventsData].sort((a, b) => new Date(a.date) - new Date(b.date));
+        renderEvents(sortedEvents);
+    </script>
+</body>
+</html>
